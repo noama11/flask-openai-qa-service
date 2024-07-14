@@ -3,11 +3,14 @@ import openai
 from . import db
 from app.models import Question
 from app.openai_integration import get_answer
-
+import os
 
 # openai.api_key = app.config['OPENAI_API_KEY']
 
 routes = Blueprint('routes', __name__)
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
+# print(app.config['SQLALCHEMY_DATABASE_URI'])
 
 @routes.route('/', methods=['GET'])
 def home():
@@ -23,6 +26,9 @@ def ask():
         # get the answer from openai
         answer = get_answer(question)
         
+        if answer is None:
+            return jsonify({'error': 'Could not retrieve answer'}), 400
+    
         # create a new question 
         question_entry = Question(question=question, answer=answer)
         
@@ -35,25 +41,3 @@ def ask():
         db.session.rollback()
         return jsonify({'error': str(e)}), 400
     
-    
-    
-# def ask_question():
-#     data = request.json
-#     question_text = data.get('question')
-    
-#     if not question_text:
-#         return jsonify({'error': 'No question provided'}), 400
-    
-#     response = openai.Completion.create(
-#         model="text-davinci-003",
-#         prompt=question_text,
-#         max_tokens=150
-#     )
-    
-#     answer_text = response.choices[0].text.strip()
-
-#     new_question = Question(question=question_text, answer=answer_text)
-#     db.session.add(new_question)
-#     db.session.commit()
-
-#     return jsonify({'question': question_text, 'answer': answer_text})

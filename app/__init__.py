@@ -1,17 +1,23 @@
+# from flask_sqlalchemy import SQLAlchemy
+
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 import os 
 from flask import Blueprint  # Import Blueprint
 from .config import Config
+from app.models import db
 
 
 
-db = SQLAlchemy()
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object('app.config.Config')
 
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    print(app.config['SQLALCHEMY_DATABASE_URI'])
+    
     db.init_app(app)
     
     with app.app_context():
