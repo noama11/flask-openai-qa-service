@@ -1,6 +1,5 @@
 from flask import jsonify,  current_app as app
 import openai
-# from openai.types.chat import ChatCompletion
 
 
 def get_answer(question):
@@ -24,8 +23,12 @@ def get_answer(question):
         return answer
 
     except openai.error.OpenAIError as e:
-        app.logger.error(f"OpenAI API error: {e}")
-        return None
+        if "You exceeded your current quota" in str(e):
+            app.logger.error("OpenAI API quota exceeded. Please check your plan and billing details.")
+            return "Sorry, we are experiencing high demand. Please try again later."
+        else:
+            app.logger.error(f"OpenAI API error: {e}")
+            return "An error occurred while processing your request."
     except Exception as e:
         app.logger.error(f"Unexpected error: {e}")
-        return None
+        return "An unexpected error occurred."

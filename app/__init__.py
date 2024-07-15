@@ -1,45 +1,31 @@
-# from flask_sqlalchemy import SQLAlchemy
 
 from flask import Flask
 import os 
-from flask import Blueprint  # Import Blueprint
 from app.models import db
 
-# from config import DevelopmentConfig
-# from .config import DevelopmentConfig
-# from .config import Config
-from .config import Config, DevelopmentConfig, TestingConfig
+from .config import Config, DevelopmentConfig, TestingConfig, ProductionConfig
 
 from .models import db
 
 from dotenv import load_dotenv
- # This loads environment variables from .env
 
+load_dotenv()  
 
 def create_app(config_name='development'):
-    app = Flask(__name__)
-    
     load_dotenv() 
-    
-    env = os.environ.get('FLASK_ENV', 'development')
+    app = Flask(__name__)
 
+    env = os.getenv('FLASK_ENV')
+    print(f"Environment: {env}")
+    print(env)
     if config_name == 'development':
         app.config.from_object(DevelopmentConfig)
-    else:
+   
+    elif env == 'testing':
         app.config.from_object(TestingConfig)
+    else:
+        app.config.from_object(DevelopmentConfig)    
 
-    # app.config.from_object('app.config.Config')
-    # app.config.from_object(config_class)
-    
-    print(app.config['SQLALCHEMY_DATABASE_URI'])
-    
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
-    # app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', config_class.SQLALCHEMY_DATABASE_URI)
-
-    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-    # print(app.config['SQLALCHEMY_DATABASE_URI'])
-    
     db.init_app(app)
     
     with app.app_context():

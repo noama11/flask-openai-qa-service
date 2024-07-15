@@ -2,7 +2,6 @@ Flask==2.1.1
 SQLAlchemy==1.4.27
 
 psycopg2-binary==2.9.3
-# psycopg2-binary==2.9.1
 
 openai==0.27.0
 alembic==1.7.7
@@ -13,20 +12,3 @@ Flask-SQLAlchemy==2.5.1
 
 
 
-# flask
-# SQLAlchemy
-# psycopg2-binary
-# openai
-# alembic
-# pytest
-# python-dotenv
-# Werkzeug
-# Flask-SQLAlchemy
-# tenacity==8.0.1  # Make sure to add the correct version you wish to use
-
-# Flask==2.0.1
-# Flask-SQLAlchemy==2.5.1
-# psycopg2-binary==2.9.1
-# openai==0.10.2
-# python-dotenv==0.19.2
-# pytest

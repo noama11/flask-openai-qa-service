@@ -1,4 +1,3 @@
-# Add the project root directory to the Python path
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -10,12 +9,9 @@ from app.models import Question
 from app.openai_integration import get_answer
 import os
 
-# openai.api_key = app.config['OPENAI_API_KEY']
 
 routes = Blueprint('routes', __name__)
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB_URI')
-# print(app.config['SQLALCHEMY_DATABASE_URI'])
 
 @routes.route('/', methods=['GET'])
 def home():
@@ -26,10 +22,9 @@ def home():
 def ask():
     try:
         data = request.get_json()
-        # question = data['question']
+
         question = data.get('question')
         print(question)
-        # get the answer from openai
         answer = get_answer(question)
         
         if not answer:
