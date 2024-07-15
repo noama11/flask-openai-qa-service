@@ -1,5 +1,10 @@
+# Add the project root directory to the Python path
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+
 from flask import request, Blueprint,  jsonify
-import openai
 from . import db
 from app.models import Question
 from app.openai_integration import get_answer
@@ -21,12 +26,13 @@ def home():
 def ask():
     try:
         data = request.get_json()
-        question = data['question']
-        
+        # question = data['question']
+        question = data.get('question')
+        print(question)
         # get the answer from openai
         answer = get_answer(question)
         
-        if answer is None:
+        if not answer:
             return jsonify({'error': 'Could not retrieve answer'}), 400
     
         # create a new question 
@@ -35,7 +41,7 @@ def ask():
         db.session.add(question_entry)
         db.session.commit()
         
-        return jsonify({'question': question, 'answer': answer})
+        return jsonify({'question': question, 'answer': answer}), 200
     
     except Exception as e:
         db.session.rollback()

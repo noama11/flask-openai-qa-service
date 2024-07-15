@@ -3,7 +3,6 @@ import openai
 # from openai.types.chat import ChatCompletion
 
 
-# or openai.Completion
 def get_answer(question):
     try:
         openai.api_key = app.config['OPENAI_API_KEY']
@@ -11,16 +10,19 @@ def get_answer(question):
             model="gpt-3.5-turbo",
             messages=[{"role": "user", "content": question}]
         )
-        print(f"OpenAI API response: {response}")
         
-        # Return None if the answer is an empty string
-        if not answer:
+        # Log the full response from OpenAI
+        app.logger.info(f"OpenAI API response: {response}")
+
+        # Extract and clean the answer text
+        if not response['choices'][0]['message']['content'].strip():
             return None
         
-        answer = response.choices[0].text.strip()
-        print(f"Extracted answer: {answer}")  # Debugging statement
+        answer = response['choices'][0]['message']['content'].strip()
+        
+        app.logger.info(f"Extracted answer: {answer}")
         return answer
-    
+
     except openai.error.OpenAIError as e:
         app.logger.error(f"OpenAI API error: {e}")
         return None
